@@ -2,7 +2,7 @@
 
 from mcp.server.mcpserver import MCPServer
 
-from equipment import tools
+from equipment import tools, tracing
 
 mcp = MCPServer("beehive-equipment")
 
@@ -15,4 +15,5 @@ def get_employee_info(employee_id: str) -> dict:
 
 
 if __name__ == "__main__":
+    tracing.setup_tracing("equipment-server")
     mcp.run()
