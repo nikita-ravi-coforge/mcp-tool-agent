@@ -6,6 +6,9 @@ carries the trace ID from client to server; this module only decides where those
     (neither)                                           tracing off
 """
 
+import functools
+import inspect
+import json
 import os
 import sys
 
@@ -41,3 +44,17 @@ def setup_tracing(service_name: str, processor: SpanProcessor | None = None) -> 
     provider = TracerProvider(resource=Resource.create({"service.name": service_name}))
     provider.add_span_processor(processor)
     trace.set_tracer_provider(provider)
+
+
+def record_io(function):
+    """Decorator: put the call's arguments and return value on the current span, as its input and output."""
+
+    @functools.wraps(function)
+    def wrapper(*args, **kwargs):
+        span = trace.get_current_span()
+        span.set_attribute("input.value", json.dumps(inspect.signature(function).bind(*args, **kwargs).arguments))
+        result = function(*args, **kwargs)
+        span.set_attribute("output.value", json.dumps(result))
+        return result
+
+    return wrapper

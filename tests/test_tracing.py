@@ -89,3 +89,32 @@ def test_each_tool_call_made_by_the_agent_records_its_arguments_and_result():
     assert span.attributes["input.value"] == '{"employee_id": "BC-9999"}'
     assert '"found": false' in span.attributes["output.value"]
     assert span.attributes["langsmith.span.kind"] == "tool"
+
+
+def test_server_side_tool_span_records_its_arguments_and_result():
+    call_tool_inside_parent_span()
+    span = next(s for s in exporter.get_finished_spans() if s.name == "tools/call get_employee_info")
+    assert span.attributes["input.value"] == '{"employee_id": "BC-2102"}'
+    assert '"role": "site_reliability_engineer"' in span.attributes["output.value"]
+
+
+def test_draft_check_span_records_the_draft_the_verifier_result_and_the_reflection_verdict():
+    import json
+
+    from test_agent import APPROVE, CHECK, EMPLOYEE_INFO, LOOKUP, REQUEST, TOOL_DEFS, FakeModel, FakeTools, submit, turn, verdict
+
+    from equipment import agent
+
+    model = FakeModel(
+        [turn(LOOKUP, CHECK), turn(submit("approve", "Ships 2031-01-01.")), turn(submit("approve", "Approved."))],
+        [verdict("pass")],
+    )
+    fake_tools = FakeTools(get_employee_info=EMPLOYEE_INFO, check_request_eligibility=APPROVE)
+    exporter.clear()
+    asyncio.run(agent.run_agent("BC-2102", REQUEST, model, TOOL_DEFS, fake_tools))
+
+    first, second = [s for s in exporter.get_finished_spans() if s.name == "check draft"]
+    assert json.loads(first.attributes["input.value"])["response"] == "Ships 2031-01-01."
+    rejected = json.loads(first.attributes["output.value"])
+    assert "2031-01-01" in rejected["verifier"][0] and rejected["reflection"] == "skipped"
+    assert json.loads(second.attributes["output.value"]) == {"verifier": "pass", "reflection": "pass", "feedback": ""}

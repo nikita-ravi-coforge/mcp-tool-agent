@@ -119,8 +119,11 @@ async def run_agent(employee_id: str, request_text: str, model, tools: list[dict
 
         if drafts:
             draft = drafts[-1].input
-            problems = verify(draft, steps, request_text)
-            verdict, feedback = ("skipped", "") if problems else await reflect(model, request_text, steps, draft)
+            with tracer.start_as_current_span("check draft", attributes={"input.value": json.dumps(draft)}) as span:
+                problems = verify(draft, steps, request_text)
+                verdict, feedback = ("skipped", "") if problems else await reflect(model, request_text, steps, draft)
+                checked = {"verifier": problems or "pass", "reflection": verdict, "feedback": feedback}
+                span.set_attribute("output.value", json.dumps(checked))
             rounds.append({"draft": draft, "problems": problems, "reflection": verdict, "feedback": feedback})
             if verdict == "pass":
                 return Result(draft["decision"], draft["response"], steps, rounds)

@@ -11,6 +11,7 @@ mcp = MCPServer("beehive-equipment")
 
 
 @mcp.tool()
+@tracing.record_io  # the SDK's span for this call is current here; add what was asked and answered
 def get_employee_info(employee_id: str) -> dict:
     """Look up an employee by ID (e.g. BC-2102). Returns role, tenure in months, employment status,
     on-call flag, equipment on file and peripheral spend. Unknown IDs return found=false."""
@@ -18,6 +19,7 @@ def get_employee_info(employee_id: str) -> dict:
 
 
 @mcp.tool()
+@tracing.record_io
 def get_policy_limits(role: str) -> dict:
     """Look up what a role is entitled to under policy IT-EQ-100. `role` is the role string returned by
     get_employee_info (e.g. software_engineer, intern, contractor). Returns laptop_tier,
@@ -29,6 +31,7 @@ def get_policy_limits(role: str) -> dict:
 
 
 @mcp.tool()
+@tracing.record_io
 def check_request_eligibility(
     employee_id: str,
     item: str,
@@ -52,6 +55,7 @@ def check_request_eligibility(
 
 
 @mcp.tool()
+@tracing.record_io
 def flag_for_human_review(employee_id: str, request: str, reason: str) -> dict:
     """Open a ticket for a human reviewer. Call this exactly once whenever the outcome is escalate:
     check_request_eligibility returned escalate, the request does not pin down one item and one request
