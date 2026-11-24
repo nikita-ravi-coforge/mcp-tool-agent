@@ -38,3 +38,12 @@ def get_employee_info(employee_id: str, as_of: date | None = None) -> dict:
         **record,
         "tenure_months": months_between(hired, as_of or today()),
     }
+
+
+def get_policy_limits(role: str) -> dict:
+    """What a role is entitled to: laptop tier, refresh interval, peripheral budgets, security key cap."""
+    role = role.strip().lower()
+    roles = _load("policies")["roles"]
+    if role not in roles:
+        return {"found": False, "role": role, "error": f"No policy for role {role}.", "known_roles": list(roles)}
+    return {"found": True, "role": role, **roles[role]}

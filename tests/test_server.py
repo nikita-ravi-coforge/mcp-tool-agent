@@ -44,3 +44,10 @@ def test_get_employee_info_over_stdio():
 
 def test_unknown_employee_over_stdio_is_a_result_not_a_protocol_error():
     assert call("get_employee_info", {"employee_id": "BC-9999"})["found"] is False
+
+
+def test_get_policy_limits_over_stdio():
+    limits = call("get_policy_limits", {"role": "intern"})
+    assert limits["peripheral_scope"] == "electronic_only"
+    assert limits["peripheral_budget_first_year_usd"] == 925
+    assert call("get_policy_limits", {"role": "astronaut"})["found"] is False
