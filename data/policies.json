@@ -1,0 +1,124 @@
+{
+  "_meta": {
+    "company": "BEEHIVE Cloud, Inc. (fictional cloud-infrastructure company)",
+    "policy_id": "IT-EQ-100 rev A",
+    "effective_date": "2026-01-01",
+    "as_of_for_tests": "2026-11-23",
+    "based_on": "Public handbooks of GitLab and Sourcegraph, plus common lost-device and on-call phone practices. Each rule's 'source' says where it comes from; 'assumption' means invented for this lab.",
+    "tool_mapping": {
+      "get_employee_info(employee_id)": "employees.json -> role, tenure (from hire_date), status, on_call, equipment on file, peripheral_spend",
+      "get_policy_limits(role)": "roles[role] -> laptop_tier, laptop_refresh_months (how often), peripheral budgets (how much per year), entitlements (what)",
+      "check_request_eligibility(employee_id, item, request_type='standard')": "item = a category ('laptop', 'monitor', 'security_key', ...) or a SKU ('LAP-PRO16-64') or 'personal_laptop'. request_type = standard | broken | lost | additional | keep_after_leaving. Runs rules 1-14 in order; first rule that decides wins. Returns decision, rule id, reason, and any computed values (eligible_date, remaining_budget).",
+      "flag_for_human_review(employee_id, request, reason)": "appends one JSON line to escalations.jsonl"
+    }
+  },
+
+  "roles": {
+    "software_engineer": {
+      "laptop_tier": "eng", "laptop_refresh_months": 36,
+      "peripheral_budget_first_year_usd": 1500, "peripheral_budget_annual_usd": 500,
+      "peripheral_scope": "all",
+      "security_keys_max": 2
+    },
+    "site_reliability_engineer": {
+      "laptop_tier": "eng", "laptop_refresh_months": 36,
+      "peripheral_budget_first_year_usd": 1500, "peripheral_budget_annual_usd": 500,
+      "peripheral_scope": "all",
+      "security_keys_max": 2
+    },
+    "security_engineer": {
+      "laptop_tier": "eng", "laptop_refresh_months": 36,
+      "peripheral_budget_first_year_usd": 1500, "peripheral_budget_annual_usd": 500,
+      "peripheral_scope": "all",
+      "security_keys_max": 2
+    },
+    "product_manager": {
+      "laptop_tier": "pro", "laptop_refresh_months": 36,
+      "peripheral_budget_first_year_usd": 1500, "peripheral_budget_annual_usd": 500,
+      "peripheral_scope": "all",
+      "security_keys_max": 2
+    },
+    "product_designer": {
+      "laptop_tier": "pro", "laptop_refresh_months": 36,
+      "peripheral_budget_first_year_usd": 2500, "peripheral_budget_annual_usd": 500,
+      "peripheral_scope": "all",
+      "security_keys_max": 2
+    },
+    "people_manager": {
+      "laptop_tier": "pro", "laptop_refresh_months": 36,
+      "peripheral_budget_first_year_usd": 1500, "peripheral_budget_annual_usd": 500,
+      "peripheral_scope": "all",
+      "security_keys_max": 2
+    },
+    "account_executive": {
+      "laptop_tier": "standard", "laptop_refresh_months": 36,
+      "peripheral_budget_first_year_usd": 1500, "peripheral_budget_annual_usd": 500,
+      "peripheral_scope": "all",
+      "security_keys_max": 0
+    },
+    "intern": {
+      "laptop_tier": "standard", "laptop_refresh_months": 36,
+      "peripheral_budget_first_year_usd": 925, "peripheral_budget_annual_usd": 0,
+      "peripheral_scope": "electronic_only",
+      "security_keys_max": 0,
+      "note": "Laptop must be returned at the end of the internship."
+    },
+    "contractor": {
+      "laptop_tier": null, "laptop_refresh_months": null,
+      "peripheral_budget_first_year_usd": 0, "peripheral_budget_annual_usd": 0,
+      "peripheral_scope": "none",
+      "security_keys_max": 1,
+      "note": "Contractors without a company laptop may be issued one security key for SSO login. A company laptop is an exception that needs IT + Security approval."
+    }
+  },
+
+  "rules": [
+    {"id": 1,  "check": "Employee exists", "if_fails": "escalate", "source": "assumption"},
+
+    {"id": 2,  "check": "Employment status. terminated -> deny. on_leave -> escalate. offboarding -> deny any request except request_type 'keep_after_leaving'", "if_fails": "deny|escalate",
+     "source": "assumption"},
+
+    {"id": 3,  "check": "Item is known. 'personal_laptop' -> deny (personal laptops may not be used for company work). Item not in catalog -> escalate", "if_fails": "deny|escalate",
+     "source": "https://handbook.gitlab.com/handbook/security/corporate/services/laptops/procurement"},
+
+    {"id": 4,  "check": "request_type 'lost' for a laptop or phone -> escalate as a security incident: employee reports to IT and manager in writing within 24 hours, files a police report within 72 hours if stolen, IT remote-wipes the device", "if_fails": "escalate",
+     "source": "https://help.moveworks.com/docs/policy-traveling-with-company-owned-devices-needs-input ; https://handbook.gitlab.com/handbook/security/corporate/end-user-services/laptop-management/laptop-security/management"},
+
+    {"id": 5,  "check": "request_type 'broken' for a laptop -> escalate: early replacement goes through the replacement program, where IT assesses repair vs replace", "if_fails": "escalate",
+     "source": "https://handbook.gitlab.com/handbook/security/corporate/services/laptops/repair"},
+
+    {"id": 6,  "check": "request_type 'additional' for a laptop -> escalate: a second device needs a business justification plus manager approval and IT approval", "if_fails": "escalate",
+     "source": "https://handbook.gitlab.com/handbook/security/corporate/end-user-services/laptop-management/laptop-ordering/"},
+
+    {"id": 7,  "check": "request_type 'keep_after_leaving' (keep laptop at offboarding). Requires status offboarding. If offboarding_for_cause -> deny. If the laptop has been in use >= 12 months -> approve (kept at no cost after IT wipes it). Otherwise -> deny (may buy it at current net value instead)", "if_fails": "deny",
+     "source": "https://handbook.gitlab.com/handbook/eta/corporate-it/end-user-services/laptop-management/laptop-offboarding-returns/ ; https://handbook.gitlab.com/handbook/security/corporate/services/laptops/buyback"},
+
+    {"id": 8,  "check": "Contractor requesting a laptop -> escalate: contractors are a listed exception needing IT + Security approval", "if_fails": "escalate",
+     "source": "https://handbook.sourcegraph.com/company-info-and-process/policies/asset-management-policy"},
+
+    {"id": 9,  "check": "Entitlement. laptop: role has a laptop_tier. Peripherals: role peripheral_scope is 'all', or 'electronic_only' and the item is an electronic peripheral. security_key: security_keys_max > 0. mobile_phone: employee on_call is true. Otherwise -> deny", "if_fails": "deny",
+     "source": "assumption, modeled on https://about.sourcegraph.com/handbook/people-ops/spending-company-money (intern budget covers electronic desk items only) and UM-Dearborn phone criteria (on-call staff)"},
+
+    {"id": 10, "check": "Laptop spec. If a specific laptop SKU is requested and its tier ranks above the role's laptop_tier -> escalate (higher spec needs prior approval)", "if_fails": "escalate",
+     "source": "https://about.sourcegraph.com/handbook/people-ops/spending-company-money"},
+
+    {"id": 11, "check": "Laptop refresh. No active laptop on file -> approve (new issue at role tier). Otherwise months since in_use_since >= laptop_refresh_months -> approve; else deny and return eligible_date = in_use_since + refresh months. The clock starts when the laptop went into active use, not hire date", "if_fails": "deny",
+     "source": "https://handbook.gitlab.com/handbook/security/corporate/services/laptops/refresh"},
+
+    {"id": 12, "check": "Security key. If request_type is 'lost' but no key on file has status 'reported_lost' -> escalate (the lost key must be reported and revoked before a replacement ships). Otherwise active keys < security_keys_max -> approve; else deny", "if_fails": "escalate|deny",
+     "source": "https://handbook.gitlab.com/handbook/security/guides/yubikey/purchasing/ ; https://handbook.sourcegraph.com/departments/security/knowledge-base/yubikey-faq"},
+
+    {"id": 13, "check": "Mobile phone (on-call already confirmed by rule 9). Already has an active company phone -> deny; else approve", "if_fails": "deny",
+     "source": "assumption"},
+
+    {"id": 14, "check": "Peripheral budget. Tenure < 12 months: remaining = first_year budget minus all spend since hire. Tenure >= 12 months: remaining = annual budget minus spend dated within the 12 months before as_of. Item price <= remaining -> approve; else escalate (over budget needs manager approval)", "if_fails": "escalate",
+     "source": "https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_requests/120640 ; design budget uplift from https://about.sourcegraph.com/handbook/people-ops/spending-company-money"}
+  ],
+
+  "standing_facts": {
+    "old_laptop_handback": "After receiving a refreshed laptop, the old one must be wiped or returned within 2 weeks (GitLab).",
+    "mdm_required": "All company laptops are enrolled in device management (MDM) and can be remotely wiped (GitLab).",
+    "company_property": "Physical items over $1,000 are company property (Sourcegraph).",
+    "two_keys_why": "Two security keys are issued so a lost key doesn't lock the employee out while a replacement ships (Sourcegraph)."
+  }
+}

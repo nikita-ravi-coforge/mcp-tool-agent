@@ -1,0 +1,29 @@
+{
+  "_meta": {
+    "company": "BEEHIVE Cloud, Inc. (fictional cloud-infrastructure company)",
+    "description": "IT equipment catalog. Prices are mock list prices in USD. 'tier' ranks laptops: standard < pro < eng.",
+    "as_of": "2026-11-01"
+  },
+  "items": [
+    {"sku": "LAP-AIR15-24",  "category": "laptop",          "tier": "standard", "model": "15-inch MacBook Air, 24GB RAM, 512GB SSD",  "unit_cost_usd": 1699},
+    {"sku": "LAP-PRO14-36",  "category": "laptop",          "tier": "pro",      "model": "14-inch MacBook Pro, 36GB RAM, 1TB SSD",    "unit_cost_usd": 2899},
+    {"sku": "LAP-PRO16-64",  "category": "laptop",          "tier": "eng",      "model": "16-inch MacBook Pro, 64GB RAM, 1TB SSD",    "unit_cost_usd": 3999},
+
+    {"sku": "MON-27-4K",     "category": "monitor",         "model": "27-inch 4K USB-C monitor",                "unit_cost_usd": 380},
+    {"sku": "DCK-TB4",       "category": "dock",            "model": "Thunderbolt 4 dock",                      "unit_cost_usd": 230},
+    {"sku": "HST-ANC",       "category": "headset",         "model": "Noise-cancelling wireless headset",       "unit_cost_usd": 250},
+    {"sku": "CAM-1080",      "category": "webcam",          "model": "1080p webcam",                            "unit_cost_usd": 120},
+    {"sku": "KBM-WIRELESS",  "category": "keyboard_mouse",  "model": "Wireless keyboard and mouse",             "unit_cost_usd": 190},
+    {"sku": "STD-LAPTOP",    "category": "laptop_stand",    "model": "Adjustable laptop stand",                 "unit_cost_usd": 160},
+    {"sku": "CHR-ERGO",      "category": "chair",           "model": "Ergonomic office chair",                  "unit_cost_usd": 650},
+    {"sku": "DSK-SIT-STAND", "category": "standing_desk",   "model": "Electric sit-stand desk",                 "unit_cost_usd": 600},
+
+    {"sku": "KEY-YUBI5-NFC", "category": "security_key",    "model": "YubiKey 5 NFC (FIPS)",                    "unit_cost_usd": 80},
+    {"sku": "PHN-ONCALL",    "category": "mobile_phone",    "model": "Company smartphone for on-call paging (MDM-enrolled)", "unit_cost_usd": 799}
+  ],
+  "peripheral_categories": ["monitor", "dock", "headset", "webcam", "keyboard_mouse", "laptop_stand", "chair", "standing_desk"],
+  "electronic_peripherals": ["monitor", "dock", "headset", "webcam", "keyboard_mouse"],
+  "not_allowed": {
+    "personal_laptop": "Personal laptops may not be used for company work. Only company-managed (MDM-enrolled) laptops may access company systems."
+  }
+}

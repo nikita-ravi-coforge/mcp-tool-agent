@@ -1,0 +1,732 @@
+{
+  "_meta": {
+    "company": "BEEHIVE Cloud, Inc. (fictional cloud-infrastructure company)",
+    "description": "Employees with equipment on file and home-office peripheral spend. All people, IDs and serials are synthetic. Compute tenure from hire_date at request time.",
+    "exported_at": "2026-11-23T08:00:00-05:00"
+  },
+  "employees": {
+    "BC-1001": {
+      "name": "Diane Morales",
+      "email": "diane.morales@beehive.example",
+      "role": "people_manager",
+      "department": "Engineering",
+      "manager_id": null,
+      "location": "Remote - Austin, TX",
+      "hire_date": "2018-04-02",
+      "employment_type": "full_time",
+      "status": "active",
+      "on_call": false,
+      "equipment": [
+        {
+          "asset_tag": "BC-A-40101",
+          "sku": "LAP-PRO14-36",
+          "category": "laptop",
+          "in_use_since": "2025-01-13",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40102",
+          "sku": "KEY-YUBI5-NFC",
+          "category": "security_key",
+          "in_use_since": "2025-01-13",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40103",
+          "sku": "KEY-YUBI5-NFC",
+          "category": "security_key",
+          "in_use_since": "2025-01-13",
+          "status": "active"
+        }
+      ],
+      "peripheral_spend": []
+    },
+    "BC-1002": {
+      "name": "Victor Hale",
+      "email": "victor.hale@beehive.example",
+      "role": "people_manager",
+      "department": "Product",
+      "manager_id": null,
+      "location": "Remote - Denver, CO",
+      "hire_date": "2019-08-19",
+      "employment_type": "full_time",
+      "status": "active",
+      "on_call": false,
+      "equipment": [
+        {
+          "asset_tag": "BC-A-40104",
+          "sku": "LAP-PRO14-36",
+          "category": "laptop",
+          "in_use_since": "2024-09-09",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40105",
+          "sku": "KEY-YUBI5-NFC",
+          "category": "security_key",
+          "in_use_since": "2024-09-09",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40106",
+          "sku": "KEY-YUBI5-NFC",
+          "category": "security_key",
+          "in_use_since": "2024-09-09",
+          "status": "active"
+        }
+      ],
+      "peripheral_spend": []
+    },
+    "BC-1003": {
+      "name": "Renee Abbott",
+      "email": "renee.abbott@beehive.example",
+      "role": "people_manager",
+      "department": "Sales",
+      "manager_id": null,
+      "location": "New York, NY office",
+      "hire_date": "2021-02-01",
+      "employment_type": "full_time",
+      "status": "active",
+      "on_call": false,
+      "equipment": [
+        {
+          "asset_tag": "BC-A-40107",
+          "sku": "LAP-PRO14-36",
+          "category": "laptop",
+          "in_use_since": "2025-04-07",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40108",
+          "sku": "KEY-YUBI5-NFC",
+          "category": "security_key",
+          "in_use_since": "2025-04-07",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40109",
+          "sku": "KEY-YUBI5-NFC",
+          "category": "security_key",
+          "in_use_since": "2025-04-07",
+          "status": "active"
+        }
+      ],
+      "peripheral_spend": []
+    },
+    "BC-2101": {
+      "name": "Maya Chen",
+      "email": "maya.chen@beehive.example",
+      "role": "software_engineer",
+      "department": "Engineering",
+      "manager_id": "BC-1001",
+      "location": "Remote - Seattle, WA",
+      "hire_date": "2022-05-09",
+      "employment_type": "full_time",
+      "status": "active",
+      "on_call": false,
+      "equipment": [
+        {
+          "asset_tag": "BC-A-40110",
+          "sku": "LAP-PRO16-64",
+          "category": "laptop",
+          "in_use_since": "2024-02-05",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40111",
+          "sku": "KEY-YUBI5-NFC",
+          "category": "security_key",
+          "in_use_since": "2022-05-09",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40112",
+          "sku": "KEY-YUBI5-NFC",
+          "category": "security_key",
+          "in_use_since": "2022-05-09",
+          "status": "active"
+        }
+      ],
+      "peripheral_spend": [
+        {
+          "date": "2022-05-20",
+          "sku": "MON-27-4K",
+          "category": "monitor",
+          "amount_usd": 380
+        },
+        {
+          "date": "2022-05-20",
+          "sku": "DCK-TB4",
+          "category": "dock",
+          "amount_usd": 230
+        }
+      ]
+    },
+    "BC-2102": {
+      "name": "Jordan Patel",
+      "email": "jordan.patel@beehive.example",
+      "role": "site_reliability_engineer",
+      "department": "Engineering",
+      "manager_id": "BC-1001",
+      "location": "Remote - Chicago, IL",
+      "hire_date": "2020-03-02",
+      "employment_type": "full_time",
+      "status": "active",
+      "on_call": true,
+      "equipment": [
+        {
+          "asset_tag": "BC-A-40113",
+          "sku": "LAP-PRO16-64",
+          "category": "laptop",
+          "in_use_since": "2023-08-14",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40114",
+          "sku": "KEY-YUBI5-NFC",
+          "category": "security_key",
+          "in_use_since": "2023-08-14",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40115",
+          "sku": "KEY-YUBI5-NFC",
+          "category": "security_key",
+          "in_use_since": "2023-08-14",
+          "status": "active"
+        }
+      ],
+      "peripheral_spend": []
+    },
+    "BC-2103": {
+      "name": "Sam Okoro",
+      "email": "sam.okoro@beehive.example",
+      "role": "account_executive",
+      "department": "Sales",
+      "manager_id": "BC-1003",
+      "location": "New York, NY office",
+      "hire_date": "2024-09-16",
+      "employment_type": "full_time",
+      "status": "active",
+      "on_call": false,
+      "equipment": [
+        {
+          "asset_tag": "BC-A-40116",
+          "sku": "LAP-AIR15-24",
+          "category": "laptop",
+          "in_use_since": "2024-09-16",
+          "status": "active"
+        }
+      ],
+      "peripheral_spend": []
+    },
+    "BC-2104": {
+      "name": "Lena Fischer",
+      "email": "lena.fischer@beehive.example",
+      "role": "product_designer",
+      "department": "Product",
+      "manager_id": "BC-1002",
+      "location": "Remote - Portland, OR",
+      "hire_date": "2026-05-04",
+      "employment_type": "full_time",
+      "status": "active",
+      "on_call": false,
+      "equipment": [
+        {
+          "asset_tag": "BC-A-40117",
+          "sku": "LAP-PRO14-36",
+          "category": "laptop",
+          "in_use_since": "2026-05-04",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40118",
+          "sku": "KEY-YUBI5-NFC",
+          "category": "security_key",
+          "in_use_since": "2026-05-04",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40119",
+          "sku": "KEY-YUBI5-NFC",
+          "category": "security_key",
+          "in_use_since": "2026-05-04",
+          "status": "active"
+        }
+      ],
+      "peripheral_spend": [
+        {
+          "date": "2026-05-06",
+          "sku": "MON-27-4K",
+          "category": "monitor",
+          "amount_usd": 380
+        },
+        {
+          "date": "2026-05-06",
+          "sku": "DCK-TB4",
+          "category": "dock",
+          "amount_usd": 230
+        },
+        {
+          "date": "2026-05-20",
+          "sku": "CHR-ERGO",
+          "category": "chair",
+          "amount_usd": 650
+        },
+        {
+          "date": "2026-06-02",
+          "sku": "CAM-1080",
+          "category": "webcam",
+          "amount_usd": 120
+        },
+        {
+          "date": "2026-06-02",
+          "sku": "HST-ANC",
+          "category": "headset",
+          "amount_usd": 250
+        },
+        {
+          "date": "2026-09-15",
+          "sku": "KBM-WIRELESS",
+          "category": "keyboard_mouse",
+          "amount_usd": 190
+        },
+        {
+          "date": "2026-09-15",
+          "sku": "STD-LAPTOP",
+          "category": "laptop_stand",
+          "amount_usd": 160
+        }
+      ]
+    },
+    "BC-2105": {
+      "name": "Raj Iyer",
+      "email": "raj.iyer@beehive.example",
+      "role": "product_manager",
+      "department": "Product",
+      "manager_id": "BC-1002",
+      "location": "Remote - Atlanta, GA",
+      "hire_date": "2019-01-14",
+      "employment_type": "full_time",
+      "status": "active",
+      "on_call": false,
+      "equipment": [
+        {
+          "asset_tag": "BC-A-40120",
+          "sku": "LAP-PRO14-36",
+          "category": "laptop",
+          "in_use_since": "2024-06-03",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40121",
+          "sku": "KEY-YUBI5-NFC",
+          "category": "security_key",
+          "in_use_since": "2024-06-03",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40122",
+          "sku": "KEY-YUBI5-NFC",
+          "category": "security_key",
+          "in_use_since": "2024-06-03",
+          "status": "active"
+        }
+      ],
+      "peripheral_spend": [
+        {
+          "date": "2025-06-18",
+          "sku": "CHR-ERGO",
+          "category": "chair",
+          "amount_usd": 650
+        },
+        {
+          "date": "2025-11-20",
+          "sku": "DCK-TB4",
+          "category": "dock",
+          "amount_usd": 230
+        },
+        {
+          "date": "2026-03-10",
+          "sku": "CAM-1080",
+          "category": "webcam",
+          "amount_usd": 120
+        }
+      ]
+    },
+    "BC-2106": {
+      "name": "Theo Brooks",
+      "email": "theo.brooks@beehive.example",
+      "role": "intern",
+      "department": "Engineering",
+      "manager_id": "BC-1001",
+      "location": "Remote - Madison, WI",
+      "hire_date": "2026-09-08",
+      "employment_type": "full_time",
+      "status": "active",
+      "on_call": false,
+      "internship_end": "2026-12-18",
+      "equipment": [
+        {
+          "asset_tag": "BC-A-40123",
+          "sku": "LAP-AIR15-24",
+          "category": "laptop",
+          "in_use_since": "2026-09-08",
+          "status": "active"
+        }
+      ],
+      "peripheral_spend": [
+        {
+          "date": "2026-09-10",
+          "sku": "MON-27-4K",
+          "category": "monitor",
+          "amount_usd": 380
+        }
+      ]
+    },
+    "BC-9001": {
+      "name": "Ana Ruiz",
+      "email": "ana.ruiz@beehive.example",
+      "role": "contractor",
+      "department": "Engineering",
+      "manager_id": "BC-1001",
+      "location": "Remote - Miami, FL",
+      "hire_date": "2026-08-03",
+      "employment_type": "contractor",
+      "status": "active",
+      "on_call": false,
+      "contract_end": "2027-02-26",
+      "vendor": "Brightpath Staffing (fictional)",
+      "equipment": [],
+      "peripheral_spend": []
+    },
+    "BC-2107": {
+      "name": "Kenji Watanabe",
+      "email": "kenji.watanabe@beehive.example",
+      "role": "security_engineer",
+      "department": "Engineering",
+      "manager_id": "BC-1001",
+      "location": "Remote - San Jose, CA",
+      "hire_date": "2021-11-08",
+      "employment_type": "full_time",
+      "status": "active",
+      "on_call": false,
+      "equipment": [
+        {
+          "asset_tag": "BC-A-40124",
+          "sku": "LAP-PRO16-64",
+          "category": "laptop",
+          "in_use_since": "2024-11-11",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40125",
+          "sku": "KEY-YUBI5-NFC",
+          "category": "security_key",
+          "in_use_since": "2024-11-11",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40126",
+          "sku": "KEY-YUBI5-NFC",
+          "category": "security_key",
+          "in_use_since": "2024-11-11",
+          "status": "active"
+        }
+      ],
+      "peripheral_spend": []
+    },
+    "BC-2108": {
+      "name": "Olivia Grant",
+      "email": "olivia.grant@beehive.example",
+      "role": "software_engineer",
+      "department": "Engineering",
+      "manager_id": "BC-1001",
+      "location": "Remote - Boston, MA",
+      "hire_date": "2023-03-20",
+      "employment_type": "full_time",
+      "status": "active",
+      "on_call": false,
+      "equipment": [
+        {
+          "asset_tag": "BC-A-40127",
+          "sku": "LAP-PRO16-64",
+          "category": "laptop",
+          "in_use_since": "2025-03-24",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40128",
+          "sku": "KEY-YUBI5-NFC",
+          "category": "security_key",
+          "in_use_since": "2023-03-20",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40129",
+          "sku": "KEY-YUBI5-NFC",
+          "category": "security_key",
+          "in_use_since": "2023-03-20",
+          "status": "reported_lost",
+          "reported_lost_on": "2026-11-20"
+        }
+      ],
+      "peripheral_spend": []
+    },
+    "BC-2109": {
+      "name": "Marcus Lee",
+      "email": "marcus.lee@beehive.example",
+      "role": "software_engineer",
+      "department": "Engineering",
+      "manager_id": "BC-1001",
+      "location": "Remote - Philadelphia, PA",
+      "hire_date": "2022-10-03",
+      "employment_type": "full_time",
+      "status": "active",
+      "on_call": false,
+      "equipment": [
+        {
+          "asset_tag": "BC-A-40130",
+          "sku": "LAP-PRO16-64",
+          "category": "laptop",
+          "in_use_since": "2025-02-10",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40131",
+          "sku": "KEY-YUBI5-NFC",
+          "category": "security_key",
+          "in_use_since": "2022-10-03",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40132",
+          "sku": "KEY-YUBI5-NFC",
+          "category": "security_key",
+          "in_use_since": "2022-10-03",
+          "status": "active"
+        }
+      ],
+      "peripheral_spend": []
+    },
+    "BC-2110": {
+      "name": "Hannah Kim",
+      "email": "hannah.kim@beehive.example",
+      "role": "site_reliability_engineer",
+      "department": "Engineering",
+      "manager_id": "BC-1001",
+      "location": "Remote - Raleigh, NC",
+      "hire_date": "2024-01-08",
+      "employment_type": "full_time",
+      "status": "active",
+      "on_call": true,
+      "equipment": [
+        {
+          "asset_tag": "BC-A-40133",
+          "sku": "LAP-PRO16-64",
+          "category": "laptop",
+          "in_use_since": "2024-01-08",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40134",
+          "sku": "KEY-YUBI5-NFC",
+          "category": "security_key",
+          "in_use_since": "2024-01-08",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40135",
+          "sku": "KEY-YUBI5-NFC",
+          "category": "security_key",
+          "in_use_since": "2024-01-08",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40136",
+          "sku": "PHN-ONCALL",
+          "category": "mobile_phone",
+          "in_use_since": "2024-01-08",
+          "status": "active"
+        }
+      ],
+      "peripheral_spend": []
+    },
+    "BC-2111": {
+      "name": "David Novak",
+      "email": "david.novak@beehive.example",
+      "role": "software_engineer",
+      "department": "Engineering",
+      "manager_id": "BC-1001",
+      "location": "Remote - Pittsburgh, PA",
+      "hire_date": "2021-06-14",
+      "employment_type": "full_time",
+      "status": "active",
+      "on_call": false,
+      "equipment": [
+        {
+          "asset_tag": "BC-A-40137",
+          "sku": "LAP-PRO16-64",
+          "category": "laptop",
+          "in_use_since": "2024-07-01",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40138",
+          "sku": "KEY-YUBI5-NFC",
+          "category": "security_key",
+          "in_use_since": "2021-06-14",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40139",
+          "sku": "KEY-YUBI5-NFC",
+          "category": "security_key",
+          "in_use_since": "2021-06-14",
+          "status": "active"
+        }
+      ],
+      "peripheral_spend": []
+    },
+    "BC-2112": {
+      "name": "Sofia Romero",
+      "email": "sofia.romero@beehive.example",
+      "role": "product_manager",
+      "department": "Product",
+      "manager_id": "BC-1002",
+      "location": "Remote - Phoenix, AZ",
+      "hire_date": "2023-02-27",
+      "employment_type": "full_time",
+      "status": "offboarding",
+      "on_call": false,
+      "last_day": "2026-12-04",
+      "offboarding_for_cause": false,
+      "equipment": [
+        {
+          "asset_tag": "BC-A-40140",
+          "sku": "LAP-PRO14-36",
+          "category": "laptop",
+          "in_use_since": "2024-03-18",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40141",
+          "sku": "KEY-YUBI5-NFC",
+          "category": "security_key",
+          "in_use_since": "2023-02-27",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40142",
+          "sku": "KEY-YUBI5-NFC",
+          "category": "security_key",
+          "in_use_since": "2023-02-27",
+          "status": "active"
+        }
+      ],
+      "peripheral_spend": []
+    },
+    "BC-2113": {
+      "name": "Ben Carter",
+      "email": "ben.carter@beehive.example",
+      "role": "account_executive",
+      "department": "Sales",
+      "manager_id": "BC-1003",
+      "location": "New York, NY office",
+      "hire_date": "2026-02-09",
+      "employment_type": "full_time",
+      "status": "offboarding",
+      "on_call": false,
+      "last_day": "2026-11-30",
+      "offboarding_for_cause": false,
+      "equipment": [
+        {
+          "asset_tag": "BC-A-40143",
+          "sku": "LAP-AIR15-24",
+          "category": "laptop",
+          "in_use_since": "2026-02-10",
+          "status": "active"
+        }
+      ],
+      "peripheral_spend": []
+    },
+    "BC-2114": {
+      "name": "Tom Avery",
+      "email": "tom.avery@beehive.example",
+      "role": "software_engineer",
+      "department": "Engineering",
+      "manager_id": "BC-1001",
+      "location": "Remote - Columbus, OH",
+      "hire_date": "2020-09-14",
+      "employment_type": "full_time",
+      "status": "offboarding",
+      "on_call": false,
+      "last_day": "2026-11-24",
+      "offboarding_for_cause": true,
+      "equipment": [
+        {
+          "asset_tag": "BC-A-40144",
+          "sku": "LAP-PRO16-64",
+          "category": "laptop",
+          "in_use_since": "2024-05-20",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40145",
+          "sku": "KEY-YUBI5-NFC",
+          "category": "security_key",
+          "in_use_since": "2020-09-14",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40146",
+          "sku": "KEY-YUBI5-NFC",
+          "category": "security_key",
+          "in_use_since": "2020-09-14",
+          "status": "active"
+        }
+      ],
+      "peripheral_spend": []
+    },
+    "BC-2115": {
+      "name": "Grace Wu",
+      "email": "grace.wu@beehive.example",
+      "role": "software_engineer",
+      "department": "Engineering",
+      "manager_id": "BC-1001",
+      "location": "Remote - Minneapolis, MN",
+      "hire_date": "2022-01-10",
+      "employment_type": "full_time",
+      "status": "on_leave",
+      "on_call": false,
+      "leave": {
+        "start": "2026-10-12",
+        "expected_return": "2027-01-11"
+      },
+      "equipment": [
+        {
+          "asset_tag": "BC-A-40147",
+          "sku": "LAP-PRO16-64",
+          "category": "laptop",
+          "in_use_since": "2023-10-02",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40148",
+          "sku": "KEY-YUBI5-NFC",
+          "category": "security_key",
+          "in_use_since": "2022-01-10",
+          "status": "active"
+        },
+        {
+          "asset_tag": "BC-A-40149",
+          "sku": "KEY-YUBI5-NFC",
+          "category": "security_key",
+          "in_use_since": "2022-01-10",
+          "status": "active"
+        }
+      ],
+      "peripheral_spend": []
+    }
+  }
+}

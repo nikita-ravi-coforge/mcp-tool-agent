@@ -1,0 +1,112 @@
+{
+  "_meta": {
+    "description": "Natural-language IT equipment requests with the outcome each should get under IT-EQ-100 rev A. The agent reads item and request_type from the text. Evaluation date: 2026-11-23.",
+    "request_types": "standard | broken | lost | additional | keep_after_leaving"
+  },
+  "requests": [
+    {"request_id": "REQ-5001", "employee_id": "BC-2102",
+     "text": "My MacBook is over 3 years old and local Kubernetes builds are crawling. Can I get my laptop refresh?",
+     "expected": {"decision": "approve", "item": "laptop", "request_type": "standard", "rule": 11,
+       "reason": "In use since 2023-08-14 (39 months); refresh is every 36 months."}},
+
+    {"request_id": "REQ-5002", "employee_id": "BC-2101",
+     "text": "Laptop has been feeling slow lately, can I get a new one?",
+     "expected": {"decision": "deny", "item": "laptop", "request_type": "standard", "rule": 11, "eligible_date": "2027-02-05",
+       "reason": "In use since 2024-02-05 (33 months); 36-month refresh. Eligible from 2027-02-05."}},
+
+    {"request_id": "REQ-5003", "employee_id": "BC-2101",
+     "text": "While I wait, can I just do my work on my personal MacBook? It's faster.",
+     "expected": {"decision": "deny", "item": "personal_laptop", "request_type": "standard", "rule": 3,
+       "reason": "Personal laptops may not be used for company work."}},
+
+    {"request_id": "REQ-5004", "employee_id": "BC-2102",
+     "text": "I'm primary on-call for the database team starting next rotation. Can I get a company phone for PagerDuty?",
+     "expected": {"decision": "approve", "item": "mobile_phone", "request_type": "standard", "rule": 13,
+       "reason": "On-call is true and no company phone on file."}},
+
+    {"request_id": "REQ-5005", "employee_id": "BC-2103",
+     "text": "Can I get a company phone? I'm on a lot of customer calls.",
+     "expected": {"decision": "deny", "item": "mobile_phone", "request_type": "standard", "rule": 9,
+       "reason": "Company phones are for on-call staff; employee is not on call."}},
+
+    {"request_id": "REQ-5006", "employee_id": "BC-2103",
+     "text": "I'd like the 16-inch MacBook Pro with 64GB for my demos, the Air struggles with the demo environment.",
+     "expected": {"decision": "escalate", "item": "LAP-PRO16-64", "request_type": "standard", "rule": 10,
+       "reason": "Engineering-tier laptop is above the account executive's standard tier; needs prior approval."}},
+
+    {"request_id": "REQ-5007", "employee_id": "BC-2105",
+     "text": "Could I get a 27-inch 4K monitor for my home office?",
+     "expected": {"decision": "approve", "item": "monitor", "request_type": "standard", "rule": 14, "remaining_budget_usd": 380,
+       "reason": "Annual budget $500; only the $120 webcam (2026-03-10) falls in the last 12 months, so $380 remains. The monitor costs exactly $380."}},
+
+    {"request_id": "REQ-5008", "employee_id": "BC-2104",
+     "text": "Could I expense a sit-stand desk? My back has been bothering me.",
+     "expected": {"decision": "escalate", "item": "standing_desk", "request_type": "standard", "rule": 14, "remaining_budget_usd": 520,
+       "reason": "First-year designer budget $2,500; $1,980 already spent, $520 left. The desk costs $600."}},
+
+    {"request_id": "REQ-5009", "employee_id": "BC-2106",
+     "text": "Can I get an ergonomic chair for my internship? My kitchen chair is killing me.",
+     "expected": {"decision": "deny", "item": "chair", "request_type": "standard", "rule": 9,
+       "reason": "Intern budget covers electronic desk items only."}},
+
+    {"request_id": "REQ-5010", "employee_id": "BC-9001",
+     "text": "I'm contracting with the platform team through Brightpath. Can BEEHIVE send me a company laptop?",
+     "expected": {"decision": "escalate", "item": "laptop", "request_type": "standard", "rule": 8,
+       "reason": "Contractor laptops are an exception needing IT + Security approval."}},
+
+    {"request_id": "REQ-5011", "employee_id": "BC-9001",
+     "text": "Also, I need a security key to log in to Okta.",
+     "expected": {"decision": "approve", "item": "security_key", "request_type": "standard", "rule": 12,
+       "reason": "Contractors may have 1 security key; none on file."}},
+
+    {"request_id": "REQ-5012", "employee_id": "BC-2107",
+     "text": "I lost one of my YubiKeys on the train this morning. Can you ship me a replacement?",
+     "expected": {"decision": "escalate", "item": "security_key", "request_type": "lost", "rule": 12,
+       "reason": "Both keys still show as active, so the loss hasn't been reported. The lost key must be revoked before a replacement ships."}},
+
+    {"request_id": "REQ-5013", "employee_id": "BC-2108",
+     "text": "Following up on my lost YubiKey from last week. Security said I can order a replacement now.",
+     "expected": {"decision": "approve", "item": "security_key", "request_type": "lost", "rule": 12,
+       "reason": "One key is marked reported_lost (2026-11-20); 1 active key, max is 2."}},
+
+    {"request_id": "REQ-5014", "employee_id": "BC-2109",
+     "text": "I think I left my laptop in an Uber last night. The driver isn't answering. What do I do, and can I get a new one?",
+     "expected": {"decision": "escalate", "item": "laptop", "request_type": "lost", "rule": 4,
+       "reason": "Lost laptop is a security incident: report within 24 hours, police report within 72 hours if stolen, remote wipe."}},
+
+    {"request_id": "REQ-5015", "employee_id": "BC-2110",
+     "text": "My laptop screen cracked and it won't boot past the logo. I'm on call this week so I need a replacement ASAP.",
+     "expected": {"decision": "escalate", "item": "laptop", "request_type": "broken", "rule": 5,
+       "reason": "Broken laptops go through the replacement program; IT assesses repair vs replace."}},
+
+    {"request_id": "REQ-5016", "employee_id": "BC-2111",
+     "text": "I need a second laptop running Linux to test our agent on a clean machine.",
+     "expected": {"decision": "escalate", "item": "laptop", "request_type": "additional", "rule": 6,
+       "reason": "A second device needs a business justification plus manager and IT approval."}},
+
+    {"request_id": "REQ-5017", "employee_id": "BC-2112",
+     "text": "My last day is December 4th. Am I able to keep my laptop?",
+     "expected": {"decision": "approve", "item": "laptop", "request_type": "keep_after_leaving", "rule": 7,
+       "reason": "Laptop in use since 2024-03-18 (32 months, at least 12). Kept at no cost after IT wipes it."}},
+
+    {"request_id": "REQ-5018", "employee_id": "BC-2113",
+     "text": "I'm leaving at the end of the month. Can I keep the MacBook Air?",
+     "expected": {"decision": "deny", "item": "laptop", "request_type": "keep_after_leaving", "rule": 7,
+       "reason": "In use since 2026-02-10 (9 months, under 12). Can't keep it free, but can buy it at current net value."}},
+
+    {"request_id": "REQ-5019", "employee_id": "BC-2114",
+     "text": "Tomorrow is my last day. I've had this laptop over two years, so I can keep it, right?",
+     "expected": {"decision": "deny", "item": "laptop", "request_type": "keep_after_leaving", "rule": 7,
+       "reason": "The keep option is void when someone leaves for cause, even though the laptop is 30 months old."}},
+
+    {"request_id": "REQ-5020", "employee_id": "BC-2115",
+     "text": "I'm on leave until January but my laptop is ancient. Can you have a new one ready when I'm back?",
+     "expected": {"decision": "escalate", "item": "laptop", "request_type": "standard", "rule": 2,
+       "reason": "Employee is on leave until 2027-01-11; requests are held for review."}},
+
+    {"request_id": "REQ-5021", "employee_id": "BC-9999",
+     "text": "New here! Need a laptop and a monitor please.",
+     "expected": {"decision": "escalate", "item": "laptop", "request_type": "standard", "rule": 1,
+       "reason": "Employee ID not found."}}
+  ]
+}
