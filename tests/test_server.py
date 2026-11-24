@@ -51,3 +51,33 @@ def test_get_policy_limits_over_stdio():
     assert limits["peripheral_scope"] == "electronic_only"
     assert limits["peripheral_budget_first_year_usd"] == 925
     assert call("get_policy_limits", {"role": "astronaut"})["found"] is False
+
+
+def test_check_request_eligibility_over_stdio_uses_the_frozen_date():
+    result = call("check_request_eligibility", {"employee_id": "BC-2101", "item": "laptop"})
+    assert (result["decision"], result["rule"], result["eligible_date"]) == ("deny", 11, "2027-02-05")
+    assert result["request_type"] == "standard"
+    lost = call("check_request_eligibility", {"employee_id": "BC-2109", "item": "laptop", "request_type": "lost"})
+    assert (lost["decision"], lost["rule"]) == ("escalate", 4)
+
+
+def test_invalid_request_type_over_stdio_is_a_tool_error_naming_the_valid_values():
+    async def go():
+        async with Client(SERVER) as client:
+            return await client.call_tool(
+                "check_request_eligibility", {"employee_id": "BC-2101", "item": "laptop", "request_type": "upgrade"}
+            )
+
+    result = asyncio.run(go())
+    assert result.is_error is True
+    assert "keep_after_leaving" in result.content[0].text
+
+
+def test_tool_schemas_do_not_expose_as_of():
+    async def go():
+        async with Client(SERVER) as client:
+            return (await client.list_tools()).tools
+
+    tools = asyncio.run(go())
+    assert {"get_employee_info", "get_policy_limits", "check_request_eligibility"} <= {t.name for t in tools}
+    assert all("as_of" not in t.input_schema["properties"] for t in tools)
