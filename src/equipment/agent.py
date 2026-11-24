@@ -35,8 +35,8 @@ sent to the employee as written.
 The tools are your only source of facts. get_employee_info and get_policy_limits tell you about the person and \
 their role; check_request_eligibility applies the policy rules and returns the decision, which you should adopt \
 rather than re-derive, because the rule engine is the authority and the employee record often contradicts what a \
-request claims. Before each tool call, write one short line saying what you are about to check and why; these \
-lines are shown to the people who audit the decision.
+request claims. Before each tool call, write one short line saying what you are about to check and why, including \
+when you make several calls in one turn; these lines are shown to the people who audit the decision.
 
 Escalate whenever the outcome is not clear-cut: the eligibility check says escalate, the request does not pin down \
 a single item and request type or asks for several things at once, or a tool fails or returns something you cannot \
@@ -104,7 +104,7 @@ async def run_agent(employee_id: str, request_text: str, model, tools: list[dict
             break
         messages.append({"role": "assistant", "content": reply.content})
 
-        results, drafts, notes = [], [], []
+        results, drafts, notes, thought = [], [], [], ""
         for block in reply.content:
             if block.type in ("thinking", "text"):
                 notes.append(block.thinking if block.type == "thinking" else block.text)
@@ -112,9 +112,10 @@ async def run_agent(employee_id: str, request_text: str, model, tools: list[dict
                 drafts.append(block)
             elif block.type == "tool_use":
                 text, is_error = await call_tool(block.name, block.input)
-                steps.append(_step(" ".join(filter(None, notes)), block.name, block.input, text, is_error))
+                # A turn with several calls often states its reasoning once; that thought covers all of them.
+                thought, notes = " ".join(filter(None, notes)) or thought, []
+                steps.append(_step(thought, block.name, block.input, text, is_error))
                 results.append(_tool_result(block.id, text, is_error))
-                notes = []
 
         if drafts:
             draft = drafts[-1].input
@@ -259,9 +260,8 @@ def request_params(system: str, messages: list, tools: list[dict], schema: dict 
 
 
 async def claude(system, messages, tools, schema=None):  # pragma: no cover - needs the network and an API key
-    with tracer.start_as_current_span("model.call", attributes={"reflection": schema is not None}):
-        async with anthropic.AsyncAnthropic() as client:
-            return await client.beta.messages.create(**request_params(system, messages, tools, schema))
+    async with anthropic.AsyncAnthropic() as client:  # the SDK emits its own span for each call
+        return await client.beta.messages.create(**request_params(system, messages, tools, schema))
 
 
 async def mcp_tools(client) -> list[dict]:

@@ -509,3 +509,13 @@ def test_mcp_adapters_list_and_call_tools_on_the_real_server_in_process():
     assert lookup["input_schema"]["required"] == ["employee_id"]
     assert is_error is False and json.loads(text)["employee_id"] == "BC-2102"
     assert error_flag is True and "employee_id" in error_text
+
+
+def test_one_thought_stated_for_several_calls_in_a_turn_is_shown_on_each_of_them():
+    model = FakeModel(
+        [turn(note("I'll look the employee up and check the policy."), LOOKUP, CHECK), turn(submit("approve"))],
+        [verdict("pass")],
+    )
+    result = run(model, FakeTools(get_employee_info=EMPLOYEE_INFO, check_request_eligibility=APPROVE))
+
+    assert [s["thought"] for s in result.steps] == ["I'll look the employee up and check the policy."] * 2

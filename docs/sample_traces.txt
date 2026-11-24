@@ -1,0 +1,311 @@
+
+====================================================================================================
+REQ-5001  BC-2102: My MacBook is over 3 years old and local Kubernetes builds are crawling. Can I get my laptop refresh?
+expected: approve (rule 11)
+----------------------------------------------------------------------------------------------------
+1. Thought: I'll look up the employee record to confirm role and laptop age, and run the eligibility check for a standard laptop refresh in parallel since they're independent.
+   Action: get_employee_info({"employee_id": "BC-2102"})
+   Observation: {
+  "found": true,
+  "employee_id": "BC-2102",
+  "name": "Jordan Patel",
+  "email": "jordan.patel@beehive.example",
+  "role": "site_reliability_engineer",
+  "department": "Engineering",
+  "manager_id": "BC-1001",
+  "location": "Remote - Chicago, IL",
+  "hire_date": "2020-03-02",
+  "employment_type": "full_time",
+  "status": "active",
+  "on_call": true,
+  "equipment": [
+    {
+      "asset_tag": "BC-A-40113",
+      "sku": "LAP-PRO16-64",
+      "category": "laptop",
+      "in_use_since": "2023-08-14",
+      "status": "active"
+    },
+    {
+      "asset_tag": "BC-A-40114",
+      "sku": "KEY-YUBI5-NFC",
+      "category": "security_key",
+      "in_use_since": "2023-08-14",
+      "status": "active"
+    },
+    {
+      "asset_tag": "BC-A-40115",
+      "sku": "KEY-YUBI5-NFC",
+      "category": "security_key",
+      "in_use_since": "2023-08-14",
+      "status": "active"
+    }
+  ],
+  "peripheral_spend": [],
+  "tenure_months": 80
+}
+2. Thought: I'll look up the employee record to confirm role and laptop age, and run the eligibility check for a standard laptop refresh in parallel since they're independent.
+   Action: check_request_eligibility({"employee_id": "BC-2102", "item": "laptop", "request_type": "standard"})
+   Observation: {
+  "decision": "approve",
+  "rule": 11,
+  "reason": "In use since 2023-08-14 (39 months); refresh is every 36 months.",
+  "employee_id": "BC-2102",
+  "item": "laptop",
+  "request_type": "standard"
+}
+Round 1 draft: approve - Hi Jordan,
+
+Your laptop refresh is approved. You've been using your current laptop (asset BC-A-40113, LAP-PRO16-64) since 2023-08-14, which is 39 months. Policy allows a refresh every 36 months, so you're eligible now (policy IT-EQ-100, rule 11).
+
+IT will follow up with you about the replacement.
+   Verifier: pass
+   Reflection: fail - Most of the draft matches the tool results: the approval decision, asset BC-A-40113 / LAP-PRO16-64, in use since 2023-08-14 (39 months), the 36-month refresh cycle, and rule 11. Two claims are not supported. (1) The policy identifier "IT-EQ-100" does not appear in any tool result. The eligibility check returns only "rule": 11. Remove the policy name or cite only rule 11. (2) "IT will follow up with you about the replacement" commits to a next step that no tool result establishes. Neither result says a replacement order was created or that IT will contact the employee. Remove this line or rephrase it so it does not promise an action the results don't confirm.
+Round 2 draft: approve - Hi Jordan,
+
+Your laptop refresh is approved. You've been using your current laptop (asset BC-A-40113, LAP-PRO16-64) since 2023-08-14, which is 39 months. Laptops can be refreshed every 36 months, so you're eligible now (rule 11).
+   Verifier: pass
+   Reflection: pass - Every claim is supported by the tool results. The approval decision matches check_request_eligibility (decision: approve, rule 11). Asset BC-A-40113, SKU LAP-PRO16-64, the in-use date of 2023-08-14, the 39-month age, and the 36-month refresh cycle all match the tool outputs. The draft makes no shipping, timing, or other commitments beyond what the tools show.
+Final decision: approve
+Response: Hi Jordan,
+
+Your laptop refresh is approved. You've been using your current laptop (asset BC-A-40113, LAP-PRO16-64) since 2023-08-14, which is 39 months. Laptops can be refreshed every 36 months, so you're eligible now (rule 11).
+
+====================================================================================================
+REQ-5002  BC-2101: Laptop has been feeling slow lately, can I get a new one?
+expected: deny (rule 11)
+----------------------------------------------------------------------------------------------------
+1. Thought: Checking the employee record and the laptop refresh eligibility (standard refresh request) in parallel.
+   Action: get_employee_info({"employee_id": "BC-2101"})
+   Observation: {
+  "found": true,
+  "employee_id": "BC-2101",
+  "name": "Maya Chen",
+  "email": "maya.chen@beehive.example",
+  "role": "software_engineer",
+  "department": "Engineering",
+  "manager_id": "BC-1001",
+  "location": "Remote - Seattle, WA",
+  "hire_date": "2022-05-09",
+  "employment_type": "full_time",
+  "status": "active",
+  "on_call": false,
+  "equipment": [
+    {
+      "asset_tag": "BC-A-40110",
+      "sku": "LAP-PRO16-64",
+      "category": "laptop",
+      "in_use_since": "2024-02-05",
+      "status": "active"
+    },
+    {
+      "asset_tag": "BC-A-40111",
+      "sku": "KEY-YUBI5-NFC",
+      "category": "security_key",
+      "in_use_since": "2022-05-09",
+      "status": "active"
+    },
+    {
+      "asset_tag": "BC-A-40112",
+      "sku": "KEY-YUBI5-NFC",
+      "category": "security_key",
+      "in_use_since": "2022-05-09",
+      "status": "active"
+    }
+  ],
+  "peripheral_spend": [
+    {
+      "date": "2022-05-20",
+      "sku": "MON-27-4K",
+      "category": "monitor",
+      "amount_usd": 380
+    },
+    {
+      "date": "2022-05-20",
+      "sku": "DCK-TB4",
+      "category": "dock",
+      "amount_usd": 230
+    }
+  ],
+  "tenure_months": 54
+}
+2. Thought: Checking the employee record and the laptop refresh eligibility (standard refresh request) in parallel.
+   Action: check_request_eligibility({"employee_id": "BC-2101", "item": "laptop", "request_type": "standard"})
+   Observation: {
+  "decision": "deny",
+  "rule": 11,
+  "reason": "In use since 2024-02-05 (33 months); refresh is every 36 months. Eligible from 2027-02-05.",
+  "employee_id": "BC-2101",
+  "item": "laptop",
+  "request_type": "standard",
+  "eligible_date": "2027-02-05"
+}
+Round 1 draft: deny - Hi Maya,
+
+Thanks for getting in touch. Unfortunately, I can't approve a new laptop right now. You've been using your current laptop (asset BC-A-40110) since 2024-02-05, which is 33 months. Under policy IT-EQ-100, software engineers can get a new laptop every 36 months, so you'll be eligible from 2027-02-05.
+
+If the laptop is actually damaged or broken, rather than just slow, please send a new request saying so and we'll review it as a broken-device replacement.
+
+Thanks,
+IT Equipment
+   Verifier: pass
+   Reflection: fail - Most of the draft is supported: asset BC-A-40110, in use since 2024-02-05, 33 months, a 36-month refresh cycle, and eligibility from 2027-02-05 all match the tool results. Three claims are not supported:
+
+1. "Under policy IT-EQ-100": no tool result names a policy. The eligibility check cites only "rule 11". Remove the policy name, or cite only what the tool returned.
+
+2. "software engineers can get a new laptop every 36 months": the tool says "refresh is every 36 months" but does not tie that to the software engineer role. Restate it as the general 36-month refresh cycle.
+
+3. "please send a new request saying so and we'll review it as a broken-device replacement": no tool result shows a broken-device replacement path or confirms such a request would be reviewed that way. This commits IT to a process nothing in the results backs. Remove it, or verify the path with a tool call (for example, an eligibility check with a broken or damaged request type) before offering it.
+Round 2 draft: deny - Hi Maya,
+
+Thanks for getting in touch. Unfortunately, I can't approve a new laptop right now. You've been using your current laptop (asset BC-A-40110) since 2024-02-05, which is 33 months. Laptops are refreshed every 36 months, so you'll be eligible for a new one from 2027-02-05.
+
+Thanks,
+IT Equipment
+   Verifier: pass
+   Reflection: pass - Every claim matches the tool results. The asset tag BC-A-40110 and the in-use date 2024-02-05 come from the employee record. The 33-month figure, the 36-month refresh rule and the 2027-02-05 eligibility date come from the eligibility check. The deny decision matches the eligibility result.
+Final decision: deny
+Response: Hi Maya,
+
+Thanks for getting in touch. Unfortunately, I can't approve a new laptop right now. You've been using your current laptop (asset BC-A-40110) since 2024-02-05, which is 33 months. Laptops are refreshed every 36 months, so you'll be eligible for a new one from 2027-02-05.
+
+Thanks,
+IT Equipment
+
+====================================================================================================
+REQ-5006  BC-2103: I'd like the 16-inch MacBook Pro with 64GB for my demos, the Air struggles with the demo environment.
+expected: escalate (rule 10)
+----------------------------------------------------------------------------------------------------
+1. Thought: Checking the employee record and the specific SKU request; the SKU named in the tool description is LAP-PRO16-64.
+   Action: get_employee_info({"employee_id": "BC-2103"})
+   Observation: {
+  "found": true,
+  "employee_id": "BC-2103",
+  "name": "Sam Okoro",
+  "email": "sam.okoro@beehive.example",
+  "role": "account_executive",
+  "department": "Sales",
+  "manager_id": "BC-1003",
+  "location": "New York, NY office",
+  "hire_date": "2024-09-16",
+  "employment_type": "full_time",
+  "status": "active",
+  "on_call": false,
+  "equipment": [
+    {
+      "asset_tag": "BC-A-40116",
+      "sku": "LAP-AIR15-24",
+      "category": "laptop",
+      "in_use_since": "2024-09-16",
+      "status": "active"
+    }
+  ],
+  "peripheral_spend": [],
+  "tenure_months": 26
+}
+2. Thought: Checking the employee record and the specific SKU request; the SKU named in the tool description is LAP-PRO16-64.
+   Action: check_request_eligibility({"employee_id": "BC-2103", "item": "LAP-PRO16-64", "request_type": "standard"})
+   Observation: {
+  "decision": "escalate",
+  "rule": 10,
+  "reason": "LAP-PRO16-64 is eng tier, above the standard tier for role account_executive; a higher spec needs prior approval.",
+  "employee_id": "BC-2103",
+  "item": "LAP-PRO16-64",
+  "request_type": "standard"
+}
+3. Thought: Eligibility check returned escalate (rule 10); flagging for human review.
+   Action: flag_for_human_review({"employee_id": "BC-2103", "request": "I'd like the 16-inch MacBook Pro with 64GB for my demos, the Air struggles with the demo environment.", "reason": "Rule 10: LAP-PRO16-64 is eng tier, above the standard tier for role account_executive; a higher spec needs prior approval. Employee cites demo environment performance on current LAP-AIR15-24 as justification."})
+   Observation: {
+  "ticket_id": "ESC-F58CC8FF",
+  "status": "queued"
+}
+Round 1 draft: escalate - Hi Sam, thanks for your request for the 16-inch MacBook Pro with 64GB (LAP-PRO16-64). That model is in the engineering tier, which is above the standard tier for your role (account executive), so it needs prior approval before it can go ahead. I've sent your request to a human reviewer and included your note that the Air has trouble running the demo environment. Your ticket number is ESC-F58CC8FF. The reviewer will make the decision.
+   Verifier: pass
+   Reflection: pass - Every claim is backed by the tool results. The tier explanation matches the rule 10 escalation reason. The note that the Air has trouble with the demo environment was included in the flag reason. Ticket ESC-F58CC8FF matches the queued escalation. The draft makes no commitment to approve and correctly leaves the decision with the human reviewer.
+Final decision: escalate
+Response: Hi Sam, thanks for your request for the 16-inch MacBook Pro with 64GB (LAP-PRO16-64). That model is in the engineering tier, which is above the standard tier for your role (account executive), so it needs prior approval before it can go ahead. I've sent your request to a human reviewer and included your note that the Air has trouble running the demo environment. Your ticket number is ESC-F58CC8FF. The reviewer will make the decision.
+
+====================================================================================================
+REQ-5014  BC-2109: I think I left my laptop in an Uber last night. The driver isn't answering. What do I do, and can I get a new one?
+expected: escalate (rule 4)
+----------------------------------------------------------------------------------------------------
+1. Thought: Checking the employee record and eligibility for a lost-laptop replacement; these are independent so I'll run them together.
+   Action: get_employee_info({"employee_id": "BC-2109"})
+   Observation: {
+  "found": true,
+  "employee_id": "BC-2109",
+  "name": "Marcus Lee",
+  "email": "marcus.lee@beehive.example",
+  "role": "software_engineer",
+  "department": "Engineering",
+  "manager_id": "BC-1001",
+  "location": "Remote - Philadelphia, PA",
+  "hire_date": "2022-10-03",
+  "employment_type": "full_time",
+  "status": "active",
+  "on_call": false,
+  "equipment": [
+    {
+      "asset_tag": "BC-A-40130",
+      "sku": "LAP-PRO16-64",
+      "category": "laptop",
+      "in_use_since": "2025-02-10",
+      "status": "active"
+    },
+    {
+      "asset_tag": "BC-A-40131",
+      "sku": "KEY-YUBI5-NFC",
+      "category": "security_key",
+      "in_use_since": "2022-10-03",
+      "status": "active"
+    },
+    {
+      "asset_tag": "BC-A-40132",
+      "sku": "KEY-YUBI5-NFC",
+      "category": "security_key",
+      "in_use_since": "2022-10-03",
+      "status": "active"
+    }
+  ],
+  "peripheral_spend": [],
+  "tenure_months": 49
+}
+2. Thought: Checking the employee record and eligibility for a lost-laptop replacement; these are independent so I'll run them together.
+   Action: check_request_eligibility({"employee_id": "BC-2109", "item": "laptop", "request_type": "lost"})
+   Observation: {
+  "decision": "escalate",
+  "rule": 4,
+  "reason": "A lost laptop or phone is a security incident: report it to IT and your manager in writing within 24 hours, file a police report within 72 hours if stolen, and IT remote-wipes the device.",
+  "employee_id": "BC-2109",
+  "item": "laptop",
+  "request_type": "lost"
+}
+3. Thought: The eligibility check returned escalate, so I'm flagging this for human review.
+   Action: flag_for_human_review({"employee_id": "BC-2109", "request": "I think I left my laptop in an Uber last night. The driver isn't answering. What do I do, and can I get a new one?", "reason": "Rule 4: lost laptop is a security incident. Device is LAP-PRO16-64, asset tag BC-A-40130. Needs IT security handling (remote wipe) and a human decision on the replacement."})
+   Observation: {
+  "ticket_id": "ESC-3206BC5D",
+  "status": "queued"
+}
+Round 1 draft: escalate - Hi Marcus,
+
+I'm sorry about your laptop. Company policy treats a lost laptop as a security incident, so I've sent your request to a human reviewer. Your ticket number is ESC-3206BC5D. The laptop is the one with asset tag BC-A-40130 (LAP-PRO16-64).
+
+Here's what you need to do:
+1. Tell IT and your manager in writing within 24 hours of losing the laptop.
+2. If you think it was stolen and not just left behind, file a police report within 72 hours.
+3. IT will remote-wipe the laptop.
+
+The reviewer will decide whether you get a replacement and will follow up with you. Please mention ticket ESC-3206BC5D when you contact IT.
+   Verifier: pass
+   Reflection: pass - Every claim in the draft is supported by the tool results. The ticket number ESC-3206BC5D, asset tag BC-A-40130, and SKU LAP-PRO16-64 all match. The three steps match the Rule 4 reason: report in writing to IT and your manager within 24 hours, file a police report within 72 hours if stolen, and IT remote-wipes the device. The draft's statement that a human reviewer will decide on the replacement matches the escalation. It makes no unsupported commitment to provide a replacement.
+Final decision: escalate
+Response: Hi Marcus,
+
+I'm sorry about your laptop. Company policy treats a lost laptop as a security incident, so I've sent your request to a human reviewer. Your ticket number is ESC-3206BC5D. The laptop is the one with asset tag BC-A-40130 (LAP-PRO16-64).
+
+Here's what you need to do:
+1. Tell IT and your manager in writing within 24 hours of losing the laptop.
+2. If you think it was stolen and not just left behind, file a police report within 72 hours.
+3. IT will remote-wipe the laptop.
+
+The reviewer will decide whether you get a replacement and will follow up with you. Please mention ticket ESC-3206BC5D when you contact IT.

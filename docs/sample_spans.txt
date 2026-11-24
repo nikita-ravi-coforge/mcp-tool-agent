@@ -1,0 +1,58 @@
+[trace 035b7637717ba0d9e75928c67f738a73] MCP send server/discover  240.8ms
+[trace 035b7637717ba0d9e75928c67f738a73] MCP send tools/list  0.7ms
+[trace 035b7637717ba0d9e75928c67f738a73] anthropic.messages.create  3171.6ms
+[trace 035b7637717ba0d9e75928c67f738a73] MCP send tools/call get_employee_info  4.1ms
+[trace 035b7637717ba0d9e75928c67f738a73] MCP send tools/call check_request_eligibility  1.4ms
+[trace 035b7637717ba0d9e75928c67f738a73] server/discover  0.1ms
+[trace 035b7637717ba0d9e75928c67f738a73] tools/list  0.1ms
+[trace 035b7637717ba0d9e75928c67f738a73] tools/call get_employee_info  2.3ms
+[trace 035b7637717ba0d9e75928c67f738a73] tools/call check_request_eligibility  0.6ms
+[trace 035b7637717ba0d9e75928c67f738a73] anthropic.messages.create  2727.7ms
+[trace 035b7637717ba0d9e75928c67f738a73] anthropic.messages.create  4519.6ms
+[trace 035b7637717ba0d9e75928c67f738a73] anthropic.messages.create  1464.4ms
+[trace 035b7637717ba0d9e75928c67f738a73] anthropic.messages.create  2415.3ms
+[trace 035b7637717ba0d9e75928c67f738a73] agent.request  14659.7ms
+[trace d4615a9fe390dbfdd533d6fc46702552] MCP send server/discover  251.5ms
+[trace d4615a9fe390dbfdd533d6fc46702552] MCP send tools/list  0.7ms
+[trace d4615a9fe390dbfdd533d6fc46702552] server/discover  0.1ms
+[trace d4615a9fe390dbfdd533d6fc46702552] tools/list  0.1ms
+[trace d4615a9fe390dbfdd533d6fc46702552] tools/call get_employee_info  3.6ms
+[trace d4615a9fe390dbfdd533d6fc46702552] tools/call check_request_eligibility  0.8ms
+[trace d4615a9fe390dbfdd533d6fc46702552] anthropic.messages.create  2783.9ms
+[trace d4615a9fe390dbfdd533d6fc46702552] MCP send tools/call get_employee_info  6.1ms
+[trace d4615a9fe390dbfdd533d6fc46702552] MCP send tools/call check_request_eligibility  1.9ms
+[trace d4615a9fe390dbfdd533d6fc46702552] anthropic.messages.create  2591.9ms
+[trace d4615a9fe390dbfdd533d6fc46702552] anthropic.messages.create  6581.4ms
+[trace d4615a9fe390dbfdd533d6fc46702552] anthropic.messages.create  2521.5ms
+[trace d4615a9fe390dbfdd533d6fc46702552] anthropic.messages.create  1944.5ms
+[trace d4615a9fe390dbfdd533d6fc46702552] agent.request  16777.3ms
+[trace c3d21f75dbd1ef6c027d6c0aeabcd7b2] MCP send server/discover  242.5ms
+[trace c3d21f75dbd1ef6c027d6c0aeabcd7b2] MCP send tools/list  0.7ms
+[trace c3d21f75dbd1ef6c027d6c0aeabcd7b2] anthropic.messages.create  3064.9ms
+[trace c3d21f75dbd1ef6c027d6c0aeabcd7b2] MCP send tools/call get_employee_info  5.6ms
+[trace c3d21f75dbd1ef6c027d6c0aeabcd7b2] MCP send tools/call check_request_eligibility  1.8ms
+[trace c3d21f75dbd1ef6c027d6c0aeabcd7b2] server/discover  0.1ms
+[trace c3d21f75dbd1ef6c027d6c0aeabcd7b2] tools/list  0.1ms
+[trace c3d21f75dbd1ef6c027d6c0aeabcd7b2] tools/call get_employee_info  3.3ms
+[trace c3d21f75dbd1ef6c027d6c0aeabcd7b2] tools/call check_request_eligibility  0.7ms
+[trace c3d21f75dbd1ef6c027d6c0aeabcd7b2] anthropic.messages.create  2415.0ms
+[trace c3d21f75dbd1ef6c027d6c0aeabcd7b2] MCP send tools/call flag_for_human_review  4.2ms
+[trace c3d21f75dbd1ef6c027d6c0aeabcd7b2] anthropic.messages.create  2348.5ms
+[trace c3d21f75dbd1ef6c027d6c0aeabcd7b2] tools/call flag_for_human_review  2.0ms
+[trace c3d21f75dbd1ef6c027d6c0aeabcd7b2] anthropic.messages.create  2084.9ms
+[trace c3d21f75dbd1ef6c027d6c0aeabcd7b2] agent.request  10236.9ms
+[trace 36a6ae0546aa7c0e3b65bbcbb739c056] MCP send server/discover  245.7ms
+[trace 36a6ae0546aa7c0e3b65bbcbb739c056] MCP send tools/list  0.7ms
+[trace 36a6ae0546aa7c0e3b65bbcbb739c056] anthropic.messages.create  2709.0ms
+[trace 36a6ae0546aa7c0e3b65bbcbb739c056] MCP send tools/call get_employee_info  5.6ms
+[trace 36a6ae0546aa7c0e3b65bbcbb739c056] MCP send tools/call check_request_eligibility  1.5ms
+[trace 36a6ae0546aa7c0e3b65bbcbb739c056] server/discover  0.1ms
+[trace 36a6ae0546aa7c0e3b65bbcbb739c056] tools/list  0.1ms
+[trace 36a6ae0546aa7c0e3b65bbcbb739c056] tools/call get_employee_info  3.6ms
+[trace 36a6ae0546aa7c0e3b65bbcbb739c056] tools/call check_request_eligibility  0.6ms
+[trace 36a6ae0546aa7c0e3b65bbcbb739c056] anthropic.messages.create  2397.2ms
+[trace 36a6ae0546aa7c0e3b65bbcbb739c056] MCP send tools/call flag_for_human_review  4.1ms
+[trace 36a6ae0546aa7c0e3b65bbcbb739c056] tools/call flag_for_human_review  1.9ms
+[trace 36a6ae0546aa7c0e3b65bbcbb739c056] anthropic.messages.create  3009.0ms
+[trace 36a6ae0546aa7c0e3b65bbcbb739c056] anthropic.messages.create  3799.9ms
+[trace 36a6ae0546aa7c0e3b65bbcbb739c056] agent.request  12264.8ms
