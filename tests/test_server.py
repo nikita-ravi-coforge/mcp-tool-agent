@@ -79,5 +79,35 @@ def test_tool_schemas_do_not_expose_as_of():
             return (await client.list_tools()).tools
 
     tools = asyncio.run(go())
-    assert {"get_employee_info", "get_policy_limits", "check_request_eligibility"} <= {t.name for t in tools}
+    assert {t.name for t in tools} == {
+        "get_employee_info",
+        "get_policy_limits",
+        "check_request_eligibility",
+        "flag_for_human_review",
+    }
     assert all("as_of" not in t.input_schema["properties"] for t in tools)
+
+
+def test_flag_for_human_review_over_stdio_writes_the_ticket_to_the_configured_file(tmp_path, monkeypatch):
+    path = tmp_path / "escalations.jsonl"
+    env = {**SERVER.env, "EQUIPMENT_ESCALATIONS_FILE": str(path)}
+    monkeypatch.setattr(sys.modules[__name__], "SERVER", SERVER.model_copy(update={"env": env}))
+
+    ticket = call(
+        "flag_for_human_review",
+        {"employee_id": "BC-2109", "request": "I left my laptop in an Uber", "reason": "Lost laptop"},
+    )
+    assert ticket["status"] == "queued"
+    [line] = path.read_text().splitlines()
+    assert json.loads(line)["ticket_id"] == ticket["ticket_id"]
+
+    async def blank_reason():
+        async with Client(SERVER) as client:
+            return await client.call_tool(
+                "flag_for_human_review", {"employee_id": "BC-2109", "request": "lost laptop", "reason": " "}
+            )
+
+    error = asyncio.run(blank_reason())
+    assert error.is_error is True
+    assert "reason must not be empty" in error.content[0].text
+    assert len(path.read_text().splitlines()) == 1

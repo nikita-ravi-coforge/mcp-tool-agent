@@ -3,6 +3,7 @@
 from typing import Literal
 
 from mcp.server.mcpserver import MCPServer
+from mcp.server.mcpserver.exceptions import ToolError
 
 from equipment import tools
 
@@ -48,6 +49,23 @@ def check_request_eligibility(
     eligible_date (when a denied laptop refresh opens) or remaining_budget_usd (peripheral budget left).
     On escalate, also call flag_for_human_review."""
     return tools.check_request_eligibility(employee_id, item, request_type)
+
+
+@mcp.tool()
+def flag_for_human_review(employee_id: str, request: str, reason: str) -> dict:
+    """Open a ticket for a human reviewer. Call this exactly once whenever the outcome is escalate:
+    check_request_eligibility returned escalate, the request does not pin down one item and one request
+    type, or a tool failed. Never call it for approve or deny.
+
+    employee_id: the requester's ID, e.g. BC-2102.
+    request: the employee's request in their own words.
+    reason: why a human must decide, e.g. the reason from check_request_eligibility. Must not be empty.
+
+    Returns ticket_id and status "queued". Quote the ticket_id to the employee."""
+    try:
+        return tools.flag_for_human_review(employee_id, request, reason)
+    except ValueError as error:  # a ToolError's message reaches the model; any other exception is masked
+        raise ToolError(str(error)) from error
 
 
 if __name__ == "__main__":

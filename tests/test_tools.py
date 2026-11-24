@@ -237,3 +237,41 @@ def test_rule_14_budget_switches_from_first_year_to_annual_at_12_months_tenure()
     assert (before["decision"], before["remaining_budget_usd"]) == ("approve", 520)
     after = check("BC-2104", "webcam", as_of=date(2027, 5, 4))  # 500 - 1980, all within 12 months
     assert (after["decision"], after["remaining_budget_usd"]) == ("escalate", -1480)
+
+
+# --- flag_for_human_review ---
+
+
+@pytest.fixture
+def escalations(tmp_path, monkeypatch):
+    path = tmp_path / "escalations.jsonl"
+    monkeypatch.setenv("EQUIPMENT_ESCALATIONS_FILE", str(path))
+    return path
+
+
+def test_flag_for_human_review_appends_one_json_line_per_ticket(escalations):
+    first = tools.flag_for_human_review(" bc-2109 ", "I left my laptop in an Uber", "Lost laptop: security incident")
+    second = tools.flag_for_human_review("BC-2110", "Screen cracked", "Broken laptop")
+    assert first["status"] == second["status"] == "queued"
+    assert first["ticket_id"] != second["ticket_id"]
+
+    lines = [json.loads(line) for line in escalations.read_text().splitlines()]
+    assert [line["ticket_id"] for line in lines] == [first["ticket_id"], second["ticket_id"]]
+    assert lines[0]["employee_id"] == "BC-2109"
+    assert lines[0]["request"] == "I left my laptop in an Uber"
+    assert lines[0]["reason"] == "Lost laptop: security incident"
+    assert lines[0]["status"] == "queued"
+
+
+def test_flag_for_human_review_defaults_to_escalations_jsonl_in_the_current_directory(tmp_path, monkeypatch):
+    monkeypatch.delenv("EQUIPMENT_ESCALATIONS_FILE", raising=False)
+    monkeypatch.chdir(tmp_path)
+    tools.flag_for_human_review("BC-2109", "lost laptop", "security incident")
+    assert len((tmp_path / "escalations.jsonl").read_text().splitlines()) == 1
+
+
+@pytest.mark.parametrize("reason", ["", "   \n"])
+def test_flag_for_human_review_without_a_reason_raises_and_writes_nothing(escalations, reason):
+    with pytest.raises(ValueError, match="reason"):
+        tools.flag_for_human_review("BC-2109", "lost laptop", reason)
+    assert not escalations.exists()

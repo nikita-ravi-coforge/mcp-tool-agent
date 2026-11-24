@@ -2,7 +2,8 @@
 
 import json
 import os
-from datetime import date
+import uuid
+from datetime import UTC, date, datetime
 from functools import cache
 from pathlib import Path
 
@@ -214,3 +215,20 @@ def check_request_eligibility(
         return result("approve", 14, reason, remaining_budget_usd=remaining)
     reason = f"{product['sku']} costs ${price} but ${remaining} of the peripheral budget remains; needs manager approval."
     return result("escalate", 14, reason, remaining_budget_usd=remaining)
+
+
+def flag_for_human_review(employee_id: str, request: str, reason: str) -> dict:
+    """Queue a request for a human reviewer by appending one JSON line to the escalations file."""
+    if not reason.strip():
+        raise ValueError("reason must not be empty: say why a human needs to review this request.")
+    ticket = {
+        "ticket_id": f"ESC-{uuid.uuid4().hex[:8].upper()}",
+        "created_at": datetime.now(UTC).isoformat(timespec="seconds"),
+        "employee_id": employee_id.strip().upper(),
+        "request": request,
+        "reason": reason.strip(),
+        "status": "queued",
+    }
+    with open(os.environ.get("EQUIPMENT_ESCALATIONS_FILE") or "escalations.jsonl", "a") as f:
+        f.write(json.dumps(ticket) + "\n")
+    return {"ticket_id": ticket["ticket_id"], "status": "queued"}
