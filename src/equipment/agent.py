@@ -12,6 +12,11 @@ from dataclasses import dataclass
 
 import anthropic
 from mcp import Client, StdioServerParameters
+from opentelemetry import trace
+
+from equipment import tracing
+
+tracer = trace.get_tracer("equipment.agent")
 
 MAX_TURNS = 8  # model turns in the main conversation, revisions included
 MAX_REVISIONS = 2
@@ -163,7 +168,6 @@ def _tool_result(tool_use_id: str, content: str, is_error: bool) -> dict:
     return {"type": "tool_result", "tool_use_id": tool_use_id, "content": content, "is_error": is_error}
 
 
-
 DATE = re.compile(r"\d{4}-\d{2}-\d{2}")
 DOLLARS = re.compile(r"\$\s?(\d[\d,]*(?:\.\d+)?)")
 # A bare number, but not a piece of a date (2026-11-23) or of an ID (BC-2102).
@@ -255,8 +259,9 @@ def request_params(system: str, messages: list, tools: list[dict], schema: dict 
 
 
 async def claude(system, messages, tools, schema=None):  # pragma: no cover - needs the network and an API key
-    async with anthropic.AsyncAnthropic() as client:
-        return await client.beta.messages.create(**request_params(system, messages, tools, schema))
+    with tracer.start_as_current_span("model.call", attributes={"reflection": schema is not None}):
+        async with anthropic.AsyncAnthropic() as client:
+            return await client.beta.messages.create(**request_params(system, messages, tools, schema))
 
 
 async def mcp_tools(client) -> list[dict]:
@@ -273,13 +278,18 @@ def mcp_caller(client):
     return call_tool
 
 
-async def main(employee_id: str, request_text: str) -> None:  # pragma: no cover - starts a subprocess, calls the API
-    env = {k: v for k, v in os.environ.items() if k.startswith("EQUIPMENT_")}  # the SDK passes a minimal env
+async def handle(employee_id: str, request_text: str, model=claude) -> Result:
+    """Start the MCP server over stdio and run one request against it."""
+    # The SDK starts the server with a minimal environment, so pass our settings and the tracing endpoint on.
+    env = {k: v for k, v in os.environ.items() if k.startswith(("EQUIPMENT_", "OTEL_"))}
     server = StdioServerParameters(command=sys.executable, args=["-m", "equipment.server"], env=env)
-    async with Client(server) as client:
-        result = await run_agent(employee_id, request_text, claude, await mcp_tools(client), mcp_caller(client))
-    print(format_trace(result))
+    with tracer.start_as_current_span("agent.request", attributes={"employee_id": employee_id}) as span:
+        async with Client(server) as client:
+            result = await run_agent(employee_id, request_text, model, await mcp_tools(client), mcp_caller(client))
+        span.set_attribute("decision", result.decision)
+        return result
 
 
 if __name__ == "__main__":
-    asyncio.run(main(sys.argv[1], sys.argv[2]))
+    tracing.setup_tracing("equipment-agent")
+    print(format_trace(asyncio.run(handle(sys.argv[1], sys.argv[2]))))

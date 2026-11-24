@@ -29,6 +29,8 @@ and returns one of three outcomes with a written response:
 ## 3. Policy rules
 
 Rules run in order. The first rule that decides wins. "Months" are completed calendar months.
+Request types `broken`, `lost` and `additional` change the outcome only where a rule names them; otherwise
+the request is treated as `standard`.
 
 | #  | Check | Outcome when it applies |
 |----|-------|-------------------------|
@@ -42,11 +44,13 @@ Rules run in order. The first rule that decides wins. "Months" are completed cal
 | 5  | `broken` laptop | escalate (IT assesses repair vs replace) |
 | 6  | `additional` laptop | escalate (needs justification, manager and IT approval) |
 | 7  | `keep_after_leaving`: not offboarding | deny |
+|    | ... item is not a laptop, or no laptop is on file | escalate |
 |    | ... left for cause | deny |
 |    | ... laptop in use 12 months or more | approve |
 |    | ... laptop in use under 12 months | deny (may buy at net value) |
 | 8  | Contractor asks for a laptop | escalate (IT + Security exception) |
-| 9  | Not entitled: role has no laptop tier; peripheral outside role scope; security key cap is 0; phone and not on call | deny |
+| 9  | Role has no entry in the policy | escalate |
+|    | Not entitled: role has no laptop tier; peripheral outside role scope; security key cap is 0; phone and not on call | deny |
 | 10 | Specific laptop SKU above the role's tier | escalate |
 | 11 | Laptop: none on file | approve |
 |    | ... in use for at least the refresh interval (36 months) | approve |
@@ -59,7 +63,7 @@ Rules run in order. The first rule that decides wins. "Months" are completed cal
 |    | ... over budget | escalate (manager approval) |
 
 Budget for rule 14: under 12 months' tenure, first-year budget minus all spend since hire. Otherwise,
-annual budget minus spend dated in the 12 months before today.
+annual budget minus spend dated in the 12 months before today (a purchase exactly 12 months ago no longer counts).
 
 ## 4. What counts as ambiguous (always escalate, never guess)
 
@@ -84,16 +88,18 @@ All return JSON objects. Unknown IDs and roles are normal results, not errors.
 ## 6. Agent behaviour
 
 1. **ReAct loop.** The agent connects to the server as an MCP client. Each step records a Thought, an
-   Action (tool name and arguments) and an Observation (tool result). At most 8 steps.
+   Action (tool name and arguments) and an Observation (tool result). At most 8 model turns, revisions included.
 2. **Draft.** The agent produces `{decision, response}`.
 3. **Deterministic verifier (code).** The draft passes only if all hold:
-   - its decision equals the decision last returned by `check_request_eligibility`;
+   - its decision equals the decision last returned by `check_request_eligibility` (a draft of `escalate`
+     is always allowed, and is the only decision allowed if that check never succeeded);
    - every date and dollar amount in the response appears in a tool observation;
    - on `escalate`, `flag_for_human_review` was called exactly once; on `approve` or `deny`, never.
-4. **Reflection (model).** A second call judges whether the response commits to anything the
+4. **Reflection (model).** Only if the verifier passed. A second call judges whether the response commits to anything the
    observations do not support. It returns pass, or fail with feedback.
 5. **Revise.** A failure from step 3 or 4 goes back to the agent, at most twice. If the draft still
-   fails, the request is escalated with reason "could not verify response".
+   fails, the code raises the ticket itself with reason "could not verify response" and sends a reply that
+   states no policy facts. The same happens if the model refuses or runs out of turns.
 
 ## 7. Acceptance
 

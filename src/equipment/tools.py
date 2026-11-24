@@ -153,6 +153,8 @@ def check_request_eligibility(
 
     # 9. Entitlement
     limits = get_policy_limits(role)
+    if not limits["found"]:
+        return result("escalate", 9, f"No policy is defined for role {role}, so entitlement cannot be determined.")
     if category == "laptop":
         entitled = limits["laptop_tier"] is not None
     elif category == "security_key":
