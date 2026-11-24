@@ -74,3 +74,18 @@ def test_trace_id_crosses_the_process_boundary_over_stdio(tmp_path):
 
     trace_id = asyncio.run(go())
     assert f"[trace {trace_id:032x}] tools/call get_employee_info" in server_stderr.read_text()
+
+
+def test_each_tool_call_made_by_the_agent_records_its_arguments_and_result():
+    from equipment import agent
+
+    async def go():
+        async with Client(mcp) as client:
+            await agent.mcp_caller(client)("get_employee_info", {"employee_id": "BC-9999"})
+
+    exporter.clear()
+    asyncio.run(go())
+    span = next(s for s in exporter.get_finished_spans() if s.name == "tool get_employee_info")
+    assert span.attributes["input.value"] == '{"employee_id": "BC-9999"}'
+    assert '"found": false' in span.attributes["output.value"]
+    assert span.attributes["langsmith.span.kind"] == "tool"

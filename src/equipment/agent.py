@@ -272,8 +272,13 @@ async def mcp_tools(client) -> list[dict]:
 
 def mcp_caller(client):
     async def call_tool(name: str, args: dict) -> tuple[str, bool]:
-        result = await client.call_tool(name, args)
-        return "\n".join(c.text for c in result.content if c.type == "text"), bool(result.is_error)
+        # The MCP SDK's own spans carry only names and timings; this one adds what was sent and what came back.
+        attributes = {"langsmith.span.kind": "tool", "input.value": json.dumps(args)}
+        with tracer.start_as_current_span(f"tool {name}", attributes=attributes) as span:
+            result = await client.call_tool(name, args)
+            text = "\n".join(c.text for c in result.content if c.type == "text")
+            span.set_attributes({"output.value": text, "is_error": bool(result.is_error)})
+            return text, bool(result.is_error)
 
     return call_tool
 
