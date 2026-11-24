@@ -283,10 +283,12 @@ async def handle(employee_id: str, request_text: str, model=claude) -> Result:
     # The SDK starts the server with a minimal environment, so pass our settings and the tracing endpoint on.
     env = {k: v for k, v in os.environ.items() if k.startswith(("EQUIPMENT_", "OTEL_"))}
     server = StdioServerParameters(command=sys.executable, args=["-m", "equipment.server"], env=env)
-    with tracer.start_as_current_span("agent.request", attributes={"employee_id": employee_id}) as span:
+    # input.value / output.value are the names trace viewers such as LangSmith show as a run's input and output.
+    attributes = {"employee_id": employee_id, "input.value": request_text}
+    with tracer.start_as_current_span("agent.request", attributes=attributes) as span:
         async with Client(server) as client:
             result = await run_agent(employee_id, request_text, model, await mcp_tools(client), mcp_caller(client))
-        span.set_attribute("decision", result.decision)
+        span.set_attributes({"decision": result.decision, "output.value": f"{result.decision}: {result.response}"})
         return result
 
 

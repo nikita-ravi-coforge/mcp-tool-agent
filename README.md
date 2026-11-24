@@ -48,6 +48,14 @@ EQUIPMENT_TRACE=console uv run --env-file .env python scripts/demo.py REQ-5001  
 OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4318 uv run --env-file .env python scripts/demo.py   # Jaeger etc.
 ```
 
+LangSmith (hosted, built for LLM runs): add to `.env`, then run the demo as usual.
+
+```sh
+OTEL_EXPORTER_OTLP_ENDPOINT=https://api.smith.langchain.com/otel
+OTEL_EXPORTER_OTLP_HEADERS=x-api-key=<langsmith key>,Langsmith-Project=mcp-tool-agent
+ANTHROPIC_OPEN_TELEMETRY_TRACES_CONTENT_MODE=content   # include prompts and responses in model spans
+```
+
 Jaeger with a browser UI at http://localhost:16686:
 
 ```sh
