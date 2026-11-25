@@ -111,9 +111,14 @@ async def run_agent(employee_id: str, request_text: str, model, tools: list[dict
             elif block.type == "tool_use" and block.name == SUBMIT["name"]:
                 drafts.append(block)
             elif block.type == "tool_use":
-                text, is_error = await call_tool(block.name, block.input)
                 # A turn with several calls often states its reasoning once; that thought covers all of them.
                 thought, notes = " ".join(filter(None, notes)) or thought, []
+                # One span per ReAct step: thought and action as its input, the observation as its output.
+                react = {"thought": thought, "action": block.name, "arguments": block.input}
+                attributes = {"langsmith.span.kind": "tool", "input.value": json.dumps(react)}
+                with tracer.start_as_current_span(f"step {len(steps) + 1}: {block.name}", attributes=attributes) as span:
+                    text, is_error = await call_tool(block.name, block.input)
+                    span.set_attributes({"output.value": text, "is_error": is_error})
                 steps.append(_step(thought, block.name, block.input, text, is_error))
                 results.append(_tool_result(block.id, text, is_error))
 
@@ -275,13 +280,8 @@ async def mcp_tools(client) -> list[dict]:
 
 def mcp_caller(client):
     async def call_tool(name: str, args: dict) -> tuple[str, bool]:
-        # The MCP SDK's own spans carry only names and timings; this one adds what was sent and what came back.
-        attributes = {"langsmith.span.kind": "tool", "input.value": json.dumps(args)}
-        with tracer.start_as_current_span(f"tool {name}", attributes=attributes) as span:
-            result = await client.call_tool(name, args)
-            text = "\n".join(c.text for c in result.content if c.type == "text")
-            span.set_attributes({"output.value": text, "is_error": bool(result.is_error)})
-            return text, bool(result.is_error)
+        result = await client.call_tool(name, args)
+        return "\n".join(c.text for c in result.content if c.type == "text"), bool(result.is_error)
 
     return call_tool
 
@@ -296,7 +296,7 @@ async def handle(employee_id: str, request_text: str, model=claude) -> Result:
     with tracer.start_as_current_span("agent.request", attributes=attributes) as span:
         async with Client(server) as client:
             result = await run_agent(employee_id, request_text, model, await mcp_tools(client), mcp_caller(client))
-        span.set_attributes({"decision": result.decision, "output.value": f"{result.decision}: {result.response}"})
+        span.set_attributes({"decision": result.decision, "output.value": format_trace(result)})
         return result
 
 

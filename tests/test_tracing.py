@@ -76,19 +76,30 @@ def test_trace_id_crosses_the_process_boundary_over_stdio(tmp_path):
     assert f"[trace {trace_id:032x}] tools/call get_employee_info" in server_stderr.read_text()
 
 
-def test_each_tool_call_made_by_the_agent_records_its_arguments_and_result():
+def test_each_react_step_is_one_span_with_thought_action_and_observation():
+    import json
+
+    from test_agent import APPROVE, CHECK, EMPLOYEE_INFO, LOOKUP, REQUEST, TOOL_DEFS, FakeModel, FakeTools, note, submit, turn, verdict
+
     from equipment import agent
 
-    async def go():
-        async with Client(mcp) as client:
-            await agent.mcp_caller(client)("get_employee_info", {"employee_id": "BC-9999"})
-
+    model = FakeModel(
+        [turn(note("Look the employee up."), LOOKUP), turn(note("Now the policy."), CHECK), turn(submit("approve"))],
+        [verdict("pass")],
+    )
+    fake_tools = FakeTools(get_employee_info=EMPLOYEE_INFO, check_request_eligibility=APPROVE)
     exporter.clear()
-    asyncio.run(go())
-    span = next(s for s in exporter.get_finished_spans() if s.name == "tool get_employee_info")
-    assert span.attributes["input.value"] == '{"employee_id": "BC-9999"}'
-    assert '"found": false' in span.attributes["output.value"]
-    assert span.attributes["langsmith.span.kind"] == "tool"
+    asyncio.run(agent.run_agent("BC-2102", REQUEST, model, TOOL_DEFS, fake_tools))
+
+    spans = {s.name: s for s in exporter.get_finished_spans()}
+    step = spans["step 2: check_request_eligibility"]
+    assert json.loads(step.attributes["input.value"]) == {
+        "thought": "Now the policy.",
+        "action": "check_request_eligibility",
+        "arguments": CHECK.input,
+    }
+    assert json.loads(step.attributes["output.value"])["decision"] == "approve"  # the observation
+    assert "step 1: get_employee_info" in spans
 
 
 def test_server_side_tool_span_records_its_arguments_and_result():
